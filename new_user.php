@@ -1,17 +1,44 @@
 <?php
-// session start here...
 
-// get all 3 strings from the form (and scrub w/ validation function)
+session_start();
 
-// make sure that the two password values match!
+include_once 'validate.php';
+$newUser = test_input($_POST['user']);
+$newUserPassword = test_input($_POST['pwd']);
+$repeatUserPassword = test_input($_POST['repeat']);
 
+if ($newUserPassword == $repeatUserPassword) {
+    $hashedPassword = password_hash($newUserPassword, PASSWORD_DEFAULT);
+} else {
+    header("location:register.php");
+}
 
-// create the password_hash using the PASSWORD_DEFAULT argument
+$servername = "localhost";
+$username = "root";
+$password = "";
+$dbname = "softball";
 
-// login to the database
+// Create connection
+$conn = mysqli_connect($servername, $username, $password, $dbname);
+// Check connection
+if (!$conn) {
+    die("Connection failed: " . mysqli_connect_error());
+}
 
-// make sure that the new user is not already in the database
+$check = "SELECT * FROM users WHERE username = '$newUser'";
+$rs = mysqli_query($conn, $check);
+$data = mysqli_fetch_array($rs, MYSQLI_NUM);
+if ($data[0] > 1) {
+    echo "User Already in Exists<br/>";
+} else {
+    $sql = "INSERT INTO users (username, password) VALUES ('$newUser', '$hashedPassword')";
+    if (mysqli_query($conn, $sql)) {
+        echo "New record created successfully";
+    } else {
+        echo "Error: " . $sql . "<br>" . mysqli_error($conn);
+    }
+}
 
-// insert username and password hash into db (put the username in the session
-// or make them login)
-
+mysqli_close($conn);
+header("location:index.php");
+?>
