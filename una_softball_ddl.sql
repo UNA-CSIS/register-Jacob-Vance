@@ -16,7 +16,6 @@ CREATE TABLE users
     password varchar(255) 
 );
 
-INSERT INTO users (username, password) VALUES ('admin', 'pwd');
 INSERT INTO users (username, password) VALUES ('admin', '$2y$10$6EagpQz90eekX4cIlXjWdu/iCCo3jmSPrLmm9kJ/OVzbmwHaJZGzG');
 
 INSERT into games (opponent, site, result) VALUES('North Georgia','Neutral','W');
